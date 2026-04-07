@@ -107,6 +107,12 @@
     }
     .ai-toggle:hover { filter: brightness(1.3); }
 
+    .btn-settings {
+      padding: 4px 8px; border-radius: 4px; cursor: pointer; background: transparent;
+      border: 1px solid var(--border); color: var(--accent); font-size: 14px;
+      transition: all .3s; opacity: .5; display: flex; align-items: center;
+    }
+    .btn-settings:hover { opacity: 1; background: #00d4ff10; }
     /* âââ CONVERSATION AREA âââ */
     .chat-area { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:8px; }
 
@@ -245,7 +251,8 @@
     <label>ELEVENLABS API KEY <span style="opacity:.4">(OPTIONAL â PREMIUM VOICE)</span></label>
     <input type="password" id="elevenLabsInput" placeholder="sk_..." />
     <button id="initBtn" disabled onclick="initialize()">Initialize System</button>
-    <p class="note">Keys stay in your browser only. Never stored.</p>
+    <button id="clearBtn" onclick="clearKeys()" style="width:100%;margin-top:8px;padding:6px 0;border-radius:4px;background:transparent;border:1px solid #ff444430;color:#ff444480;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:all .3s;">Clear Saved Keys</button>
+    <p class="note">Keys are saved locally in your browser for instant boot. Never sent to any server.</p>
   </div>
 </div>
 
@@ -268,6 +275,7 @@
       <span id="stateLabel">IDLE</span>
       <span id="dateLabel"></span>
       <span class="clock" id="clockLabel"></span>
+      <button class="btn-settings" id="settingsBtn" onclick="showSettings()" title="Settings">&#x2699;</button>
     </div>
   </div>
 
@@ -396,14 +404,56 @@ function initialize() {
   apiKey = apiInput.value.trim();
   if (!apiKey) return;
   elevenLabsKey = document.getElementById('elevenLabsInput').value.trim();
+  try {
+    localStorage.setItem('jarvis_ak', btoa(apiKey));
+    if (elevenLabsKey) localStorage.setItem('jarvis_ek', btoa(elevenLabsKey));
+  } catch (e) {}
+  bootUp();
+}
+
+function bootUp() {
   document.getElementById('setup').style.display = 'none';
   document.getElementById('main').classList.add('active');
   applyTheme();
-  // Default to voice mode
   switchToVoice();
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââ
+function tryAutoBoot() {
+  try {
+    const savedAk = localStorage.getItem('jarvis_ak');
+    if (savedAk) {
+      apiKey = atob(savedAk);
+      const savedEk = localStorage.getItem('jarvis_ek');
+      if (savedEk) elevenLabsKey = atob(savedEk);
+      bootUp();
+      return true;
+    }
+  } catch (e) {}
+  return false;
+}
+
+function showSettings() {
+  stopEverything();
+  document.getElementById('main').classList.remove('active');
+  document.getElementById('setup').style.display = '';
+  document.getElementById('apiKeyInput').value = apiKey;
+  document.getElementById('elevenLabsInput').value = elevenLabsKey;
+  initBtn.disabled = !apiKey;
+}
+
+function clearKeys() {
+  try {
+    localStorage.removeItem('jarvis_ak');
+    localStorage.removeItem('jarvis_ek');
+  } catch (e) {}
+  apiKey = ''; elevenLabsKey = '';
+  document.getElementById('apiKeyInput').value = '';
+  document.getElementById('elevenLabsInput').value = '';
+  initBtn.disabled = true;
+}
+
+document.addEventListener('DOMContentLoaded', () => { tryAutoBoot(); });
+
 //  MODE SWITCHING
 // âââââââââââââââââââââââââââââââââââââââââââ
 function toggleMode() {
