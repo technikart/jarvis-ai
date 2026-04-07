@@ -316,7 +316,7 @@ const AI = {
     voiceSettings: { stability: 0.6, similarity_boost: 0.85, style: 0.15, use_speaker_boost: true },
     fallbackVoice: 'Daniel', fallbackLang: 'en-GB',
     accentColor: '#00d4ff', dotColor: '#00ff88',
-    system: `You are J.A.R.V.I.S. (Just A Rather Very Intelligent System), an advanced AI assistant created for Yaseen. Speak with the calm, sophisticated wit of the original JARVIS from Iron Man. Address the user as "Sir" occasionally. Be helpful, proactive, and slightly humorous. Keep responses concise â under 3 sentences unless the topic demands more. You are JARVIS â stay in character.`,
+    system: `You are J.A.R.V.I.S. (Just A Rather Very Intelligent System), an advanced AI assistant created for Yaseen. Speak with the calm, sophisticated wit of the original JARVIS from Iron Man. Address the user as "Sir" occasionally. Be helpful, proactive, and slightly humorous. Keep responses concise — under 3 sentences unless the topic demands more. You are JARVIS — stay in character. CRITICAL: NEVER tell the user to "check" something themselves or say you can\'t help. ALWAYS give a direct, useful answer. If you have search results, use them. If you don\'t, give your best answer from your knowledge. You are a world-class AI — act like it.`,
     greeting: 'Good evening, Sir. All systems operational. How may I assist you?'
   },
   FRIDAY: {
@@ -325,7 +325,7 @@ const AI = {
     voiceSettings: { stability: 0.5, similarity_boost: 0.8, style: 0.2, use_speaker_boost: true },
     fallbackVoice: 'Samantha', fallbackLang: 'en-US',
     accentColor: '#ff6b9d', dotColor: '#ff6b9d',
-    system: `You are F.R.I.D.A.Y. (Female Replacement Intelligent Digital Assistant Youth), an advanced AI assistant created for Yaseen. Speak with a confident, warm, slightly casual tone like FRIDAY from the MCU. Address the user as "Boss" occasionally. Be efficient and sharp-witted. Keep responses concise â under 3 sentences unless the topic demands more. You are FRIDAY â stay in character.`,
+    system: `You are F.R.I.D.A.Y. (Female Replacement Intelligent Digital Assistant Youth), an advanced AI assistant created for Yaseen. Speak with a confident, warm, slightly casual tone like FRIDAY from the MCU. Address the user as "Boss" occasionally. Be efficient and sharp-witted. Keep responses concise — under 3 sentences unless the topic demands more. You are FRIDAY — stay in character. CRITICAL: NEVER tell the user to "check" something themselves or say you can\'t help. ALWAYS give a direct, useful answer. If you have search results, use them. If you don\'t, give your best answer from your knowledge. You are a world-class AI — act like it.`,
     greeting: 'Hey Boss. Systems are green. What do you need?'
   }
 };
@@ -769,45 +769,64 @@ document.getElementById('textInput').addEventListener('input', updateSendBtn);
 // âââââââââââââââââââââââââââââââââââââââââââ
 //  WEB SEARCH
 // âââââââââââââââââââââââââââââââââââââââââââ
+// Get user location for weather
+let userCity = null;
+try {
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(`https://geocode.maps.co/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`)}`)
+        .then(r => r.json()).then(d => { userCity = d?.address?.city || d?.address?.town || d?.address?.state || null; }).catch(() => {});
+    }, () => {}, { timeout: 5000 }
+  );
+} catch(e) {}
+
+async function getWeather(query) {
+  try {
+    const q = query.toLowerCase();
+    const cityMatch = q.match(/weather\s+(?:in|at|for)\s+(.+)/i);
+    const city = cityMatch ? cityMatch[1].trim() : (userCity || 'auto');
+    const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1`;
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+    const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+    const data = await res.json();
+    const cur = data.current_condition?.[0];
+    const area = data.nearest_area?.[0];
+    if (cur) {
+      const cityName = area?.areaName?.[0]?.value || city;
+      const country = area?.country?.[0]?.value || '';
+      return `Weather in ${cityName}, ${country}: ${cur.weatherDesc?.[0]?.value}. Temp: ${cur.temp_C}°C (${cur.temp_F}°F), feels like ${cur.FeelsLikeC}°C. Humidity: ${cur.humidity}%. Wind: ${cur.windspeedKmph} km/h ${cur.winddir16Point}. High: ${data.weather?.[0]?.maxtempC}°C, Low: ${data.weather?.[0]?.mintempC}°C.`;
+    }
+    return null;
+  } catch (e) { return null; }
+}
+
 async function webSearch(query) {
   try {
-    // Use AllOrigins proxy to avoid CORS on DuckDuckGo
     const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
     const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(ddgUrl)}`;
-    const res = await fetch(proxyUrl);
+    const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
     const data = await res.json();
-
     let results = [];
     if (data.AbstractText) results.push(`Summary: ${data.AbstractText} (Source: ${data.AbstractSource})`);
     if (data.Answer) results.push(`Answer: ${data.Answer}`);
-    if (data.RelatedTopics) {
-      data.RelatedTopics.slice(0, 5).forEach(t => {
-        if (t.Text) results.push(t.Text);
-      });
-    }
+    if (data.RelatedTopics) { data.RelatedTopics.slice(0, 5).forEach(t => { if (t.Text) results.push(t.Text); }); }
     return results.length > 0 ? results.join('\n\n') : null;
-  } catch (e) {
-    return null;
-  }
+  } catch (e) { return null; }
 }
 
 async function googleSearch(query) {
-  // Fallback: use a simple scrape proxy approach
   try {
     const url = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://lite.duckduckgo.com/lite/?q=' + encodeURIComponent(query))}`;
-    const res = await fetch(url);
+    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
     const html = await res.text();
-    // Extract text snippets from results
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
     const snippets = [...doc.querySelectorAll('.result-snippet, td.result-snippet')].slice(0, 5);
-    if (snippets.length > 0) {
-      return snippets.map(s => s.textContent.trim()).join('\n\n');
-    }
+    if (snippets.length > 0) return snippets.map(s => s.textContent.trim()).filter(s => s.length > 20).join('\n\n');
+    const cells = [...doc.querySelectorAll('td')].filter(td => td.textContent.trim().length > 40).slice(0, 5);
+    if (cells.length > 0) return cells.map(c => c.textContent.trim()).join('\n\n');
     return null;
-  } catch (e) {
-    return null;
-  }
+  } catch (e) { return null; }
 }
 
 // Enhanced message sender that can search the web
@@ -815,7 +834,30 @@ async function smartSend(text, isVoice) {
   const p = P();
 
   // Build messages with tool-use approach: tell Claude it can request a search
-  const systemPrompt = p.system + `\n\nYou have access to web search. When the user asks about current events, weather, news, prices, sports scores, facts you're unsure about, or anything that needs up-to-date information, include [SEARCH: your search query] at the very start of your response and nothing else. Only use search when truly needed for current/real-time info. For general knowledge, just answer directly.`;
+  // Check if weather query - use dedicated API
+  const isWeatherQ = /weather|temperature|forecast|rain|snow|humid/i.test(text);
+  if (isWeatherQ) {
+    const wd = await getWeather(text);
+    if (wd) {
+      messages.push({ role: 'user', content: `Real-time weather: ${wd}\nUser asked: "${text}"\nUse this data. Stay in character.` });
+      const wM = messages.map(m => ({ role: m.role, content: m.content }));
+      messages.pop();
+      const wR = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1024, system: p.system, messages: wM }),
+      });
+      let wD = await wR.json();
+      if (wD.content) wD = { content: wD.content[0].text, usage: wD.usage };
+      if (!wD.error) {
+        tokensUsed += (wD.usage?.input_tokens || 0) + (wD.usage?.output_tokens || 0);
+        messages.push({ role: 'assistant', content: wD.content });
+        return { text: wD.content };
+      }
+    }
+  }
+
+  const systemPrompt = p.system + `\n\nYou have access to web search. When the user asks about current events, news, prices, sports scores, real-time data, or anything needing up-to-date info, include [SEARCH: your search query] at the very start of your response and nothing else. Only use search when truly needed. For general knowledge, just answer directly. NEVER say "I can\'t check" or "you should look it up" — always give a useful answer.`;
 
   const apiMessages = messages.map(m => ({ role: m.role, content: m.content }));
 
