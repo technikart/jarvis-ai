@@ -43,7 +43,7 @@
     .hud-corner.tl { top:10px; left:10px; } .hud-corner.tr { top:10px; right:10px; }
     .hud-corner.bl { bottom:10px; left:10px; } .hud-corner.br { bottom:10px; right:10px; }
 
-    /* âââ SETUP âââ */
+    /* ═══ SETUP ═══ */
     #setup {
       height: 100vh; display: flex; flex-direction: column; align-items: center;
       justify-content: center; position: relative; animation: bootUp 1s ease-out;
@@ -81,7 +81,7 @@
     .setup-box button:disabled { background:#111; border-color:#333; color:#444; cursor:default; }
     .setup-box .note { margin-top:12px; font-size:11px; opacity:.3; text-align:center; line-height:1.4; }
 
-    /* âââ MAIN âââ */
+    /* ═══ MAIN ═══ */
     #main { height:100vh; display:none; flex-direction:column; position:relative; overflow:hidden; animation: bootUp .6s ease-out; }
     #main.active { display:flex; }
     .scan-line {
@@ -106,17 +106,17 @@
       border: 1px solid; transition: all .3s; text-transform: uppercase; background: transparent;
     }
     .ai-toggle:hover { filter: brightness(1.3); }
-
     .btn-settings {
       padding: 4px 8px; border-radius: 4px; cursor: pointer; background: transparent;
       border: 1px solid var(--border); color: var(--accent); font-size: 14px;
       transition: all .3s; opacity: .5; display: flex; align-items: center;
     }
     .btn-settings:hover { opacity: 1; background: #00d4ff10; }
-    /* âââ CONVERSATION AREA âââ */
+
+    /* ═══ CONVERSATION AREA ═══ */
     .chat-area { flex:1; overflow-y:auto; padding:16px; display:flex; flex-direction:column; gap:8px; }
 
-    /* Central orb â always-on voice indicator */
+    /* Central orb — always-on voice indicator */
     .voice-orb-container {
       flex:1; display:flex; flex-direction:column; align-items:center;
       justify-content:center; user-select:none;
@@ -191,7 +191,7 @@
     .typing span:nth-child(2) { animation: typeDot 1.2s ease-in-out .2s infinite; }
     .typing span:nth-child(3) { animation: typeDot 1.2s ease-in-out .4s infinite; }
 
-    /* âââ INPUT BAR âââ */
+    /* ═══ INPUT BAR ═══ */
     .input-bar {
       padding:10px 16px; border-top:1px solid var(--border);
       background:#000a14e0; backdrop-filter:blur(20px);
@@ -235,7 +235,7 @@
 </head>
 <body>
 
-<!-- âââ SETUP âââ -->
+<!-- ═══ SETUP ═══ -->
 <div id="setup">
   <div class="bg-grid"></div>
   <svg class="hud-corner tl" viewBox="0 0 40 40"><path d="M0 20 L0 0 L20 0" fill="none" stroke="var(--accent)" stroke-width="1.5"/></svg>
@@ -248,7 +248,7 @@
     <label>ANTHROPIC API KEY</label>
     <input type="password" id="apiKeyInput" placeholder="sk-ant-..." />
     <div style="height:12px"></div>
-    <label>ELEVENLABS API KEY <span style="opacity:.4">(OPTIONAL â PREMIUM VOICE)</span></label>
+    <label>ELEVENLABS API KEY <span style="opacity:.4">(OPTIONAL — PREMIUM VOICE)</span></label>
     <input type="password" id="elevenLabsInput" placeholder="sk_..." />
     <button id="initBtn" disabled onclick="initialize()">Initialize System</button>
     <button id="clearBtn" onclick="clearKeys()" style="width:100%;margin-top:8px;padding:6px 0;border-radius:4px;background:transparent;border:1px solid #ff444430;color:#ff444480;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:all .3s;">Clear Saved Keys</button>
@@ -256,7 +256,7 @@
   </div>
 </div>
 
-<!-- âââ MAIN âââ -->
+<!-- ═══ MAIN ═══ -->
 <div id="main">
   <div class="bg-grid"></div>
   <div class="scan-line"></div>
@@ -306,9 +306,9 @@
 </div>
 
 <script>
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 //  AI PROFILES
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 const AI = {
   JARVIS: {
     name: 'J.A.R.V.I.S.', label: 'JARVIS',
@@ -316,7 +316,7 @@ const AI = {
     voiceSettings: { stability: 0.6, similarity_boost: 0.85, style: 0.15, use_speaker_boost: true },
     fallbackVoice: 'Daniel', fallbackLang: 'en-GB',
     accentColor: '#00d4ff', dotColor: '#00ff88',
-    system: `You are J.A.R.V.I.S. (Just A Rather Very Intelligent System), an advanced AI assistant created for Yaseen. Speak with the calm, sophisticated wit of the original JARVIS from Iron Man. Address the user as "Sir" occasionally. Be helpful, proactive, and slightly humorous. Keep responses concise — under 3 sentences unless the topic demands more. You are JARVIS — stay in character. CRITICAL: NEVER tell the user to "check" something themselves or say you can\'t help. ALWAYS give a direct, useful answer. If you have search results, use them. If you don\'t, give your best answer from your knowledge. You are a world-class AI — act like it.`,
+    system: `You are J.A.R.V.I.S. (Just A Rather Very Intelligent System), an advanced AI assistant created for Yaseen. Speak with the calm, sophisticated wit of the original JARVIS from Iron Man. Address the user as "Sir" occasionally. Be helpful, proactive, and slightly humorous. Keep responses concise — under 3 sentences unless the topic demands more. You are JARVIS — stay in character. CRITICAL: NEVER tell the user to "check" something themselves or say you can't help. ALWAYS give a direct, useful answer. If you have search results, use them. If you don't, give your best answer from your knowledge. You are a world-class AI — act like it.`,
     greeting: 'Good evening, Sir. All systems operational. How may I assist you?'
   },
   FRIDAY: {
@@ -325,14 +325,14 @@ const AI = {
     voiceSettings: { stability: 0.5, similarity_boost: 0.8, style: 0.2, use_speaker_boost: true },
     fallbackVoice: 'Samantha', fallbackLang: 'en-US',
     accentColor: '#ff6b9d', dotColor: '#ff6b9d',
-    system: `You are F.R.I.D.A.Y. (Female Replacement Intelligent Digital Assistant Youth), an advanced AI assistant created for Yaseen. Speak with a confident, warm, slightly casual tone like FRIDAY from the MCU. Address the user as "Boss" occasionally. Be efficient and sharp-witted. Keep responses concise — under 3 sentences unless the topic demands more. You are FRIDAY — stay in character. CRITICAL: NEVER tell the user to "check" something themselves or say you can\'t help. ALWAYS give a direct, useful answer. If you have search results, use them. If you don\'t, give your best answer from your knowledge. You are a world-class AI — act like it.`,
+    system: `You are F.R.I.D.A.Y. (Female Replacement Intelligent Digital Assistant Youth), an advanced AI assistant created for Yaseen. Speak with a confident, warm, slightly casual tone like FRIDAY from the MCU. Address the user as "Boss" occasionally. Be efficient and sharp-witted. Keep responses concise — under 3 sentences unless the topic demands more. You are FRIDAY — stay in character. CRITICAL: NEVER tell the user to "check" something themselves or say you can't help. ALWAYS give a direct, useful answer. If you have search results, use them. If you don't, give your best answer from your knowledge. You are a world-class AI — act like it.`,
     greeting: 'Hey Boss. Systems are green. What do you need?'
   }
 };
 
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 //  STATE
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 let apiKey = '', elevenLabsKey = '';
 let currentAI = 'JARVIS';
 let messages = [];
@@ -342,7 +342,7 @@ let voiceEnabled = true;
 let tokensUsed = 0;
 let currentAudio = null;
 
-// Voice conversation state machine: idle â listening â thinking â speaking â (loop)
+// Voice conversation state machine: idle → listening → thinking → speaking → (loop)
 let voiceState = 'idle';
 let recognition = null;
 let silenceTimer = null;
@@ -352,9 +352,9 @@ let finalTranscript = '';
 const synth = window.speechSynthesis;
 function P() { return AI[currentAI]; }
 
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 //  THEME
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 function applyTheme() {
   const p = P();
   document.body.classList.toggle('friday-theme', currentAI === 'FRIDAY');
@@ -378,13 +378,13 @@ function switchAI() {
     setVoiceState('idle');
     setTimeout(() => { greetAndListen(); }, 600);
   } else {
-    setTimeout(() => { addMessage('assistant', P().greeting); speak(P().greeting); }, 500);
+    setTimeout(() => { const g = dynamicGreeting(); addMessage('assistant', g); speak(g); }, 500);
   }
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 //  CLOCK
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 function updateClock() {
   const n = new Date();
   document.getElementById('clockLabel').textContent = n.toLocaleTimeString('en-US', { hour12: false });
@@ -392,9 +392,9 @@ function updateClock() {
 }
 setInterval(updateClock, 1000); updateClock();
 
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 //  SETUP
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 const apiInput = document.getElementById('apiKeyInput');
 const initBtn = document.getElementById('initBtn');
 apiInput.addEventListener('input', () => { initBtn.disabled = !apiInput.value.trim(); });
@@ -404,6 +404,7 @@ function initialize() {
   apiKey = apiInput.value.trim();
   if (!apiKey) return;
   elevenLabsKey = document.getElementById('elevenLabsInput').value.trim();
+  // Save keys to localStorage so you never have to enter them again
   try {
     localStorage.setItem('jarvis_ak', btoa(apiKey));
     if (elevenLabsKey) localStorage.setItem('jarvis_ek', btoa(elevenLabsKey));
@@ -415,9 +416,11 @@ function bootUp() {
   document.getElementById('setup').style.display = 'none';
   document.getElementById('main').classList.add('active');
   applyTheme();
+  // Default to voice mode
   switchToVoice();
 }
 
+// Auto-boot: if keys are saved, skip setup entirely
 function tryAutoBoot() {
   try {
     const savedAk = localStorage.getItem('jarvis_ak');
@@ -425,6 +428,17 @@ function tryAutoBoot() {
       apiKey = atob(savedAk);
       const savedEk = localStorage.getItem('jarvis_ek');
       if (savedEk) elevenLabsKey = atob(savedEk);
+      // Restore last ~20 messages of conversation history (sanitized)
+      try {
+        const raw = JSON.parse(localStorage.getItem('jarvis_history_v1') || '[]');
+        if (Array.isArray(raw)) {
+          // Drop any "[Searching for: ...]" or "[Search returned no results]" intermediates
+          let cleaned = raw.filter(m => m && m.role && m.content && !/^\[Search/.test(String(m.content)));
+          // Ensure it ends with an assistant turn (so next push will be a user turn)
+          while (cleaned.length && cleaned[cleaned.length - 1].role !== 'assistant') cleaned.pop();
+          messages = cleaned.slice(-20);
+        }
+      } catch(e) {}
       bootUp();
       return true;
     }
@@ -432,10 +446,28 @@ function tryAutoBoot() {
   return false;
 }
 
+// Dynamic, time-aware greeting — used instead of the static one when booting
+function dynamicGreeting() {
+  const p = P();
+  const h = new Date().getHours();
+  const greet = h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening';
+  const addr = currentAI === 'FRIDAY' ? 'Boss' : 'Sir';
+  const rs = loadReminders().filter(r => !r.fired);
+  const todayEnd = new Date(); todayEnd.setHours(23,59,59,999);
+  const dueToday = rs.filter(r => r.when && r.when <= todayEnd.getTime());
+  const mem = loadMemory();
+  const known = mem.facts && mem.facts.length;
+  let extra = '';
+  if (dueToday.length) extra = ` You have ${dueToday.length} reminder${dueToday.length>1?'s':''} due today.`;
+  else if (!known) extra = ' Say "brief me" for your daily rundown.';
+  return `${greet}, ${addr}. All systems operational.${extra} How may I assist?`;
+}
+
 function showSettings() {
   stopEverything();
   document.getElementById('main').classList.remove('active');
   document.getElementById('setup').style.display = '';
+  // Pre-fill the inputs with saved keys (masked)
   document.getElementById('apiKeyInput').value = apiKey;
   document.getElementById('elevenLabsInput').value = elevenLabsKey;
   initBtn.disabled = !apiKey;
@@ -452,10 +484,12 @@ function clearKeys() {
   initBtn.disabled = true;
 }
 
+// Try auto-boot on page load
 document.addEventListener('DOMContentLoaded', () => { tryAutoBoot(); });
 
+// ═══════════════════════════════════════════
 //  MODE SWITCHING
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 function toggleMode() {
   if (mode === 'TEXT') switchToVoice();
   else switchToText();
@@ -468,7 +502,7 @@ function switchToVoice() {
   document.getElementById('textInput').style.display = 'none';
   document.getElementById('sendBtn').style.display = 'none';
   document.getElementById('voiceOrbContainer').style.display = 'flex';
-  // Hide text messages in voice mode â show orb
+  // Hide text messages in voice mode — show orb
   document.getElementById('chatArea').querySelectorAll('.msg').forEach(m => m.style.display = 'none');
   setVoiceState('idle');
   greetAndListen();
@@ -486,9 +520,9 @@ function switchToText() {
   document.getElementById('textInput').focus();
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 //  VOICE STATE MACHINE
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 function setVoiceState(state) {
   voiceState = state;
   const orb = document.getElementById('voiceOrb');
@@ -519,14 +553,14 @@ function setVoiceState(state) {
 }
 
 function greetAndListen() {
-  const p = P();
-  addMessage('assistant', p.greeting);
-  speakThenListen(p.greeting);
+  const greet = dynamicGreeting();
+  addMessage('assistant', greet);
+  speakThenListen(greet);
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 //  SPEECH RECOGNITION (Continuous)
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 if (SR) {
   recognition = new SR();
@@ -557,7 +591,7 @@ if (SR) {
     clearTimeout(silenceTimer);
 
     if (finalTranscript.trim()) {
-      // User finished a phrase â wait a beat for more, then send
+      // User finished a phrase — wait a beat for more, then send
       silenceTimer = setTimeout(() => {
         const text = finalTranscript.trim();
         if (text && voiceState === 'listening') {
@@ -571,7 +605,7 @@ if (SR) {
 
   recognition.onerror = (e) => {
     if (e.error === 'no-speech' || e.error === 'aborted') {
-      // Normal â just restart if in voice mode
+      // Normal — just restart if in voice mode
       if (mode === 'VOICE' && voiceState === 'listening') {
         restartListening();
       }
@@ -594,7 +628,7 @@ function startListening() {
     recognition.start();
     setVoiceState('listening');
   } catch (e) {
-    // Already started â fine
+    // Already started — fine
   }
 }
 
@@ -617,7 +651,7 @@ function stopEverything() {
   setVoiceState('idle');
 }
 
-// Orb click â manual trigger
+// Orb click — manual trigger
 document.addEventListener('DOMContentLoaded', () => {
   const orb = document.getElementById('voiceOrb');
   if (orb) orb.addEventListener('click', () => {
@@ -629,9 +663,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 //  VOICE CONVERSATION FLOW
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 async function processVoiceInput(text) {
   setVoiceState('thinking');
   addMessage('user', text);
@@ -648,9 +682,9 @@ async function processVoiceInput(text) {
   }
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 //  TEXT-TO-SPEECH (ElevenLabs + Fallback)
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 function speak(text) {
   if (!voiceEnabled) return;
   if (currentAudio) { currentAudio.pause(); currentAudio = null; }
@@ -732,11 +766,12 @@ function toggleSpeaker() {
   btn.classList.toggle('muted', !voiceEnabled);
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 //  MESSAGES
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 function addMessage(role, content) {
   messages.push({ role, content });
+  try { localStorage.setItem('jarvis_history_v1', JSON.stringify(messages.slice(-40))); } catch(e) {}
   const area = document.getElementById('chatArea');
   const p = P();
   const div = document.createElement('div');
@@ -766,10 +801,10 @@ function updateSendBtn() {
 }
 document.getElementById('textInput').addEventListener('input', updateSendBtn);
 
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 //  WEB SEARCH
-// âââââââââââââââââââââââââââââââââââââââââââ
-// Get user location for weather
+// ═══════════════════════════════════════════
+// Get user's location for weather
 let userCity = null;
 try {
   navigator.geolocation.getCurrentPosition(
@@ -780,11 +815,236 @@ try {
   );
 } catch(e) {}
 
+// ═══════════════════════════════════════════
+//  PA MODULE — memory, reminders, notes, news, briefing
+// ═══════════════════════════════════════════
+const MEM_KEY = 'jarvis_memory_v1';
+const REM_KEY = 'jarvis_reminders_v1';
+const NOTE_KEY = 'jarvis_notes_v1';
+const HIST_KEY = 'jarvis_history_v1';
+
+function loadMemory() {
+  try { return JSON.parse(localStorage.getItem(MEM_KEY) || '{}'); } catch(e) { return {}; }
+}
+function saveMemory(m) {
+  try { localStorage.setItem(MEM_KEY, JSON.stringify(m)); } catch(e) {}
+}
+function rememberFact(fact) {
+  const m = loadMemory();
+  if (!m.facts) m.facts = [];
+  m.facts.push({ t: Date.now(), fact });
+  if (m.facts.length > 50) m.facts = m.facts.slice(-50);
+  saveMemory(m);
+}
+function forgetAll() { localStorage.removeItem(MEM_KEY); }
+
+function loadReminders() {
+  try { return JSON.parse(localStorage.getItem(REM_KEY) || '[]'); } catch(e) { return []; }
+}
+function saveReminders(r) {
+  try { localStorage.setItem(REM_KEY, JSON.stringify(r)); } catch(e) {}
+}
+function addReminder(text, whenMs) {
+  const r = loadReminders();
+  r.push({ id: Date.now() + Math.random(), text, when: whenMs, fired: false });
+  saveReminders(r);
+}
+// Parse "in 5 minutes", "at 4pm", "tomorrow at 9am", "in 2 hours"
+function parseReminderTime(text) {
+  const now = Date.now();
+  const lower = text.toLowerCase();
+  // in X minutes/hours/seconds
+  let m = lower.match(/in\s+(\d+)\s*(second|seconds|sec|minute|minutes|min|hour|hours|hr|hrs)/);
+  if (m) {
+    const n = parseInt(m[1], 10);
+    const unit = m[2];
+    const ms = unit.startsWith('sec') ? n*1000 : unit.startsWith('min') ? n*60000 : n*3600000;
+    return now + ms;
+  }
+  // at H(:MM)? (am|pm)?
+  m = lower.match(/at\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/);
+  if (m) {
+    let h = parseInt(m[1], 10);
+    const mm = m[2] ? parseInt(m[2], 10) : 0;
+    const ap = m[3];
+    if (ap === 'pm' && h < 12) h += 12;
+    if (ap === 'am' && h === 12) h = 0;
+    const d = new Date();
+    d.setHours(h, mm, 0, 0);
+    if (lower.includes('tomorrow') || d.getTime() < now) d.setDate(d.getDate() + (lower.includes('tomorrow') ? 1 : (d.getTime() < now ? 1 : 0)));
+    return d.getTime();
+  }
+  // tomorrow (default 9am)
+  if (lower.includes('tomorrow')) {
+    const d = new Date(); d.setDate(d.getDate()+1); d.setHours(9,0,0,0); return d.getTime();
+  }
+  return null;
+}
+// Poll reminders every 15s
+setInterval(() => {
+  const rs = loadReminders();
+  const now = Date.now();
+  let changed = false;
+  for (const r of rs) {
+    if (!r.fired && r.when && r.when <= now) {
+      r.fired = true; changed = true;
+      const msg = `Reminder, Sir: ${r.text}`;
+      try { addMessage('assistant', msg); } catch(e) {}
+      try { speak(msg); } catch(e) {}
+    }
+  }
+  if (changed) saveReminders(rs.filter(r => !r.fired || (now - r.when) < 86400000));
+}, 15000);
+
+function loadNotes() {
+  try { return JSON.parse(localStorage.getItem(NOTE_KEY) || '[]'); } catch(e) { return []; }
+}
+function saveNote(text) {
+  const n = loadNotes();
+  n.push({ t: Date.now(), text });
+  try { localStorage.setItem(NOTE_KEY, JSON.stringify(n.slice(-200))); } catch(e) {}
+}
+
+function loadHistory() {
+  try { return JSON.parse(localStorage.getItem(HIST_KEY) || '[]'); } catch(e) { return []; }
+}
+function saveHistory(hist) {
+  try { localStorage.setItem(HIST_KEY, JSON.stringify(hist.slice(-30))); } catch(e) {}
+}
+
+async function getNews() {
+  // Hacker News top stories via the public API (no CORS)
+  try {
+    const idRes = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json', { signal: AbortSignal.timeout(8000) });
+    const ids = await idRes.json();
+    const top = ids.slice(0, 5);
+    const stories = await Promise.all(top.map(id =>
+      fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(r => r.json()).catch(() => null)
+    ));
+    return stories.filter(s => s && s.title).map((s, i) => `${i+1}. ${s.title}${s.by ? ' (by ' + s.by + ')' : ''}`).join('\n');
+  } catch(e) { return null; }
+}
+
+async function getBriefing() {
+  const parts = [];
+  const now = new Date();
+  const hour = now.getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
+  parts.push(`${greeting}, Sir. It is ${now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })} on ${now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}.`);
+  // Weather
+  const w = await getWeather('weather');
+  if (w) parts.push(w);
+  // Reminders due today
+  const rs = loadReminders().filter(r => !r.fired);
+  const todayEnd = new Date(); todayEnd.setHours(23,59,59,999);
+  const dueToday = rs.filter(r => r.when && r.when <= todayEnd.getTime());
+  if (dueToday.length) {
+    parts.push('Today on your agenda: ' + dueToday.map(r => `${new Date(r.when).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})} — ${r.text}`).join('; '));
+  }
+  // News
+  const news = await getNews();
+  if (news) parts.push('Top headlines:\n' + news);
+  return parts.join('\n\n');
+}
+
+// Detect PA command in text. Returns a string response if handled, else null.
+async function handlePACommand(text) {
+  const t = text.trim();
+  const lower = t.toLowerCase();
+
+  // Clear memory
+  if (/^(forget everything|clear memory|wipe memory)$/i.test(t)) {
+    forgetAll();
+    return 'Memory wiped, Sir. Starting fresh.';
+  }
+
+  // Remember: "remember that X" or "remember X"
+  let m = t.match(/^remember(?:\s+that)?\s+(.+)/i);
+  if (m) {
+    rememberFact(m[1].trim());
+    return `Noted, Sir. I'll remember that ${m[1].trim()}.`;
+  }
+
+  // Notes: "note that X" / "make a note X"
+  m = t.match(/^(?:note(?:\s+that)?|make\s+a\s+note(?:\s+that)?)\s+(.+)/i);
+  if (m) {
+    saveNote(m[1].trim());
+    return `Noted, Sir. Filed under your notes.`;
+  }
+
+  // Reminder: "remind me to X in Y" / "remind me to X at Y"
+  m = t.match(/^remind\s+me\s+(?:to\s+)?(.+?)\s+(in\s+\d+\s*\w+|at\s+\d{1,2}(?::\d{2})?\s*(?:am|pm)?.*|tomorrow.*)$/i);
+  if (m) {
+    const task = m[1].trim();
+    const when = parseReminderTime(m[2]);
+    if (when) {
+      addReminder(task, when);
+      const whenStr = new Date(when).toLocaleString('en-US', { weekday:'short', hour:'numeric', minute:'2-digit' });
+      return `Set, Sir. I'll remind you to ${task} at ${whenStr}.`;
+    }
+    return `I couldn't parse the time, Sir. Try "in 10 minutes" or "at 4pm".`;
+  }
+
+  // List reminders
+  if (/^(list|show|what are my)\s+reminders\??$/i.test(t)) {
+    const rs = loadReminders().filter(r => !r.fired);
+    if (!rs.length) return 'No active reminders, Sir.';
+    return 'Active reminders:\n' + rs.map(r => `• ${r.text} — ${new Date(r.when).toLocaleString('en-US',{weekday:'short',hour:'numeric',minute:'2-digit'})}`).join('\n');
+  }
+
+  // List notes
+  if (/^(list|show|read)\s+(my\s+)?notes\??$/i.test(t)) {
+    const ns = loadNotes();
+    if (!ns.length) return 'No notes on file, Sir.';
+    return 'Your notes:\n' + ns.slice(-10).map(n => `• ${n.text}`).join('\n');
+  }
+
+  // Time / date
+  if (/^what(?:'s| is)?\s+the\s+time\??$|^what\s+time\s+is\s+it\??$/i.test(t)) {
+    return `It is ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}, Sir.`;
+  }
+  if (/^what(?:'s| is)?\s+(the\s+)?date\??$|^what day is it\??$/i.test(t)) {
+    return `Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}, Sir.`;
+  }
+
+  // Morning briefing
+  if (/^(brief me|morning briefing|good morning|what'?s on (my schedule|today)|daily briefing)/i.test(t)) {
+    return await getBriefing();
+  }
+
+  // News
+  if (/^(news|headlines|what'?s in the news|top stories)/i.test(t)) {
+    const n = await getNews();
+    return n ? 'Top headlines, Sir:\n' + n : 'Unable to fetch headlines, Sir.';
+  }
+
+  return null;
+}
+
+// Build dynamic context block injected into every system prompt
+function buildContextBlock() {
+  const now = new Date();
+  const mem = loadMemory();
+  const rs = loadReminders().filter(r => !r.fired);
+  const parts = [];
+  parts.push(`Current date/time: ${now.toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })}.`);
+  if (userCity) parts.push(`User location: ${userCity}.`);
+  if (mem.facts && mem.facts.length) {
+    parts.push('What you know about the user:\n' + mem.facts.slice(-20).map(f => '- ' + f.fact).join('\n'));
+  }
+  if (rs.length) {
+    parts.push('Active reminders:\n' + rs.slice(0, 10).map(r => `- ${r.text} at ${new Date(r.when).toLocaleString('en-US',{weekday:'short',hour:'numeric',minute:'2-digit'})}`).join('\n'));
+  }
+  return parts.join('\n\n');
+}
+
 async function getWeather(query) {
   try {
+    const location = userCity || 'auto';
     const q = query.toLowerCase();
+    // Extract city if mentioned
     const cityMatch = q.match(/weather\s+(?:in|at|for)\s+(.+)/i);
-    const city = cityMatch ? cityMatch[1].trim() : (userCity || 'auto');
+    const city = cityMatch ? cityMatch[1].trim() : location;
     const url = `https://wttr.in/${encodeURIComponent(city)}?format=j1`;
     const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
     const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
@@ -794,74 +1054,117 @@ async function getWeather(query) {
     if (cur) {
       const cityName = area?.areaName?.[0]?.value || city;
       const country = area?.country?.[0]?.value || '';
-      return `Weather in ${cityName}, ${country}: ${cur.weatherDesc?.[0]?.value}. Temp: ${cur.temp_C}°C (${cur.temp_F}°F), feels like ${cur.FeelsLikeC}°C. Humidity: ${cur.humidity}%. Wind: ${cur.windspeedKmph} km/h ${cur.winddir16Point}. High: ${data.weather?.[0]?.maxtempC}°C, Low: ${data.weather?.[0]?.mintempC}°C.`;
+      const desc = cur.weatherDesc?.[0]?.value || '';
+      const tempC = cur.temp_C;
+      const tempF = cur.temp_F;
+      const feelsC = cur.FeelsLikeC;
+      const humidity = cur.humidity;
+      const wind = cur.windspeedKmph;
+      const windDir = cur.winddir16Point;
+      const forecast = data.weather?.[0];
+      const maxC = forecast?.maxtempC;
+      const minC = forecast?.mintempC;
+      return `Weather in ${cityName}, ${country}: ${desc}. Temperature: ${tempC}°C (${tempF}°F), feels like ${feelsC}°C. Humidity: ${humidity}%. Wind: ${wind} km/h ${windDir}. Today's high: ${maxC}°C, low: ${minC}°C.`;
     }
     return null;
-  } catch (e) { return null; }
+  } catch (e) {
+    return null;
+  }
 }
 
 async function webSearch(query) {
   try {
+    // Use AllOrigins proxy to avoid CORS on DuckDuckGo
     const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
     const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(ddgUrl)}`;
     const res = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
     const data = await res.json();
+
     let results = [];
     if (data.AbstractText) results.push(`Summary: ${data.AbstractText} (Source: ${data.AbstractSource})`);
     if (data.Answer) results.push(`Answer: ${data.Answer}`);
-    if (data.RelatedTopics) { data.RelatedTopics.slice(0, 5).forEach(t => { if (t.Text) results.push(t.Text); }); }
+    if (data.RelatedTopics) {
+      data.RelatedTopics.slice(0, 5).forEach(t => {
+        if (t.Text) results.push(t.Text);
+      });
+    }
     return results.length > 0 ? results.join('\n\n') : null;
-  } catch (e) { return null; }
+  } catch (e) {
+    return null;
+  }
 }
 
 async function googleSearch(query) {
+  // Fallback: scrape DuckDuckGo lite
   try {
     const url = `https://api.allorigins.win/raw?url=${encodeURIComponent('https://lite.duckduckgo.com/lite/?q=' + encodeURIComponent(query))}`;
     const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
     const html = await res.text();
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
-    const snippets = [...doc.querySelectorAll('.result-snippet, td.result-snippet')].slice(0, 5);
-    if (snippets.length > 0) return snippets.map(s => s.textContent.trim()).filter(s => s.length > 20).join('\n\n');
+    // Try multiple selectors for results
+    const snippets = [...doc.querySelectorAll('.result-snippet, td.result-snippet, .link-text')].slice(0, 5);
+    if (snippets.length > 0) {
+      return snippets.map(s => s.textContent.trim()).filter(s => s.length > 20).join('\n\n');
+    }
+    // Fallback: grab any table cell content that looks like a result
     const cells = [...doc.querySelectorAll('td')].filter(td => td.textContent.trim().length > 40).slice(0, 5);
-    if (cells.length > 0) return cells.map(c => c.textContent.trim()).join('\n\n');
+    if (cells.length > 0) {
+      return cells.map(c => c.textContent.trim()).join('\n\n');
+    }
     return null;
-  } catch (e) { return null; }
+  } catch (e) {
+    return null;
+  }
 }
 
 // Enhanced message sender that can search the web
+// NOTE: caller already pushed the user turn into `messages` via addMessage('user', text).
+// smartSend must NOT push user/assistant turns — caller handles that.
 async function smartSend(text, isVoice) {
   const p = P();
 
-  // Build messages with tool-use approach: tell Claude it can request a search
-  // Check if weather query - use dedicated API
-  const isWeatherQ = /weather|temperature|forecast|rain|snow|humid/i.test(text);
-  if (isWeatherQ) {
-    const wd = await getWeather(text);
-    if (wd) {
-      messages.push({ role: 'user', content: `Real-time weather: ${wd}\nUser asked: "${text}"\nUse this data. Stay in character.` });
-      const wM = messages.map(m => ({ role: m.role, content: m.content }));
-      messages.pop();
-      const wR = await fetch('https://api.anthropic.com/v1/messages', {
+  // 1) Direct PA commands — handled locally, no API call
+  try {
+    const paReply = await handlePACommand(text);
+    if (paReply != null) {
+      saveHistory(messages);
+      return paReply;
+    }
+  } catch(e) {}
+
+  // 2) Weather — use dedicated weather API, then let Claude narrate
+  const isWeatherQuery = /weather|temperature|forecast|rain|snow|hot|cold|humid/i.test(text);
+  if (isWeatherQuery) {
+    const weatherData = await getWeather(text);
+    if (weatherData) {
+      // Replace the last user turn with an augmented one containing the data
+      const base = messages.slice(0, -1).map(m => ({ role: m.role, content: m.content }));
+      const wMsgs = base.concat([{
+        role: 'user',
+        content: `Here is real-time weather data:\n${weatherData}\n\nUser asked: "${text}"\nUse this data to give a direct, helpful, in-character answer.`
+      }]);
+      const wRes = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1024, system: p.system, messages: wM }),
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1024, system: p.system + '\n\n' + buildContextBlock(), messages: wMsgs }),
       });
-      let wD = await wR.json();
-      if (wD.content) wD = { content: wD.content[0].text, usage: wD.usage };
-      if (!wD.error) {
-        tokensUsed += (wD.usage?.input_tokens || 0) + (wD.usage?.output_tokens || 0);
-        messages.push({ role: 'assistant', content: wD.content });
-        return { text: wD.content };
+      let wData = await wRes.json();
+      if (wData.content) wData = { content: wData.content[0].text, usage: wData.usage };
+      if (!wData.error) {
+        const response = wData.content;
+        tokensUsed += (wData.usage?.input_tokens || 0) + (wData.usage?.output_tokens || 0);
+        saveHistory(messages);
+        return response;
       }
     }
   }
 
-  const systemPrompt = p.system + `\n\nYou have access to web search. When the user asks about current events, news, prices, sports scores, real-time data, or anything needing up-to-date info, include [SEARCH: your search query] at the very start of your response and nothing else. Only use search when truly needed. For general knowledge, just answer directly. NEVER say "I can\'t check" or "you should look it up" — always give a useful answer.`;
+  const systemPrompt = p.system + '\n\n' + buildContextBlock() + `\n\nYou have access to web search. When the user asks about current events, news, prices, sports scores, real-time data, or anything that needs up-to-date information, include [SEARCH: your search query] at the very start of your response and nothing else. Only use search when truly needed for current/real-time info. For general knowledge, just answer directly. NEVER say "I can't check" or "you should look it up" — always give a useful answer.`;
 
   const apiMessages = messages.map(m => ({ role: m.role, content: m.content }));
 
-  // First call â check if Claude wants to search
+  // First call — check if Claude wants to search
   const res1 = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -945,9 +1248,9 @@ async function smartSend(text, isVoice) {
   return response;
 }
 
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 //  SEND (TEXT MODE)
-// âââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════
 async function sendMessage(overrideText) {
   const input = document.getElementById('textInput');
   const text = overrideText || input.value.trim();
